@@ -8,7 +8,9 @@
   "private": false,
   "scripts": {
     "lint": "eslint src",
-    "start": "parcel src/index.html"
+    "start": "parcel src/index.html",
+    "build": "parcel build src/index.html --public-url mff-tools",
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@material-ui/core": "^3.9.2",
@@ -21,6 +23,7 @@
   "devDependencies": {
     "eslint": "^5.13.0",
     "eslint-plugin-react": "^7.12.4",
+    "gh-pages": "^2.0.1",
     "parcel": "^1.11.0"
   }
 }

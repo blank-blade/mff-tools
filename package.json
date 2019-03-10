@@ -7,15 +7,20 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "lint": "eslint stories",
+    "lint": "eslint src stories",
     "deploy-storybook": "storybook-to-ghpages",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
   },
-  "devDependencies": {
-    "@babel/core": "^7.3.4",
+  "dependencies": {
     "@material-ui/core": "^3.9.2",
     "@material-ui/icons": "^3.0.2",
+    "moment": "^2.24.0",
+    "mui-datatables": "^2.0.0-beta-54",
+    "prop-types": "^15.7.2"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.3.4",
     "@storybook/addon-actions": "^5.0.1",
     "@storybook/addon-links": "^5.0.1",
     "@storybook/addons": "^5.0.1",
@@ -24,9 +29,10 @@
     "babel-loader": "^8.0.5",
     "eslint": "^5.13.0",
     "eslint-plugin-react": "^7.12.4",
-    "moment": "^2.24.0",
-    "mui-datatables": "^2.0.0-beta-54",
-    "prop-types": "^15.7.2",
+    "react": "^16.8.1",
+    "react-dom": "^16.8.1"
+  },
+  "peerDependencies": {
     "react": "^16.8.1",
     "react-dom": "^16.8.1"
   }

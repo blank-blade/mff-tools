@@ -1,10 +1,2 @@
-import React from 'react'
-import ReactDOM from 'react-dom'
-
-import App from './components/app'
-
-
-ReactDOM.render(
-  <App />,
-  document.querySelector('#app')
-)
+export { default as JobTable } from './job-table'
+export { default as MagiciteGoal } from './magicite-goal'

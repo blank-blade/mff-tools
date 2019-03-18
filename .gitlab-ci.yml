@@ -21,4 +21,4 @@ deploy:
   only:
     - master
   script:
-    - yarn deploy --ci
+    - yarn deploy --ci --remote git@github.com:woozyking/mff-tools.git --branch gh-pages

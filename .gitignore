@@ -1,5 +1,6 @@
 dist/
 out*/
+storybook-static/
 
 # Logs
 logs

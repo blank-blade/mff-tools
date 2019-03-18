@@ -1,0 +1,24 @@
+image: node:lts
+
+cache:
+  paths:
+    - node_modules
+    - .yarn-cache
+
+stages:
+  - test
+  - deploy
+
+test:
+  stage: test
+  before_script:
+    - yarn config set cache-folder .yarn-cache
+    - yarn install
+  script:
+    - yarn test
+
+deploy:
+  only:
+    - master
+  script:
+    - yarn deploy --ci

@@ -47,7 +47,7 @@ const revNodes = (type) => {
 
 const nodeValues = (type) => Object.values(getNodes()).map(value => value[type])
 
-const normTime = ({ days, hours, minutes }) => (days || 0) * 24 * 60 + (hours || 0) * 60 + (minutes || 0)
+const normTime = ({ days, hours, minutes }) => ((days || 0) * 24 * 60) + ((hours || 0) * 60) + (minutes || 0) * 1
 
 const getList = ({ type, time }) => {
   const list = []
@@ -64,7 +64,7 @@ const getList = ({ type, time }) => {
   })
 
   if (minutes) {
-    list.push(`Chill for ${minutes} minutes`)
+    list.push(`Chill for ${minutes} ${minutes > 1 ? 'minutes' : 'minute'}`)
   }
 
   return list

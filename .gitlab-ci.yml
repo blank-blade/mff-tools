@@ -26,4 +26,4 @@ deploy:
     - yarn install
   script:
     - git remote add gh-pages git@github.com:woozyking/mff-tools.git
-    - yarn deploy --ci --remote gh-pages --branch gh-pages
+    - yarn deploy --ci --remote gh-pages --branch gh-pages 1> /dev/null

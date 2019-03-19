@@ -18,8 +18,12 @@ test:
     - yarn test
 
 deploy:
+  stage: deploy
   only:
     - master
+  before_script:
+    - yarn config set cache-folder .yarn-cache
+    - yarn install
   script:
     - git remote add gh-pages git@github.com:woozyking/mff-tools.git
     - yarn deploy --ci --remote gh-pages --branch gh-pages

@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, Fragment } from 'react'
+import PropTypes from 'prop-types'
 
 import {
   Grid,
@@ -12,7 +13,8 @@ import {
   List,
   ListItem,
   ListItemText,
-  ListItemSecondaryAction,
+  Avatar,
+  Divider,
 } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
 
@@ -30,6 +32,16 @@ const getDefaultNodes = () => ({
   'Bahamut Lagoon - 40': {
     base: 4.5 * 40,
     vip: 6 * 40,
+    checked: true,
+  },
+  'MP 5 ⭐ - 60': {
+    base: 3 * 60,
+    vip: 4 * 60,
+    checked: true,
+  },
+  'MP 4 ⭐ - 50': {
+    base: 3 * 50,
+    vip: 4 * 50,
     checked: true,
   },
   'Labyrinthine Tower - 8': {
@@ -92,17 +104,27 @@ const styles = (theme) => ({
   root: {
     flexGrow: 1,
   },
+  timerForm: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  textField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: 108,
+  },
   nodeList: {
     width: '100%',
-    maxWidth: 360,
     backgroundColor: theme.palette.background.paper,
+  },
+  avatar: {
+    margin: 0,
+    color: '#fff',
+    backgroundColor: '#3f51b5', // TODO: use theme color
   },
 })
 
-/*
-TODOs:
-*/
-const BoostPlanner = (classes) => {
+const BoostPlanner = ({ classes }) => {
   const [time, setTime] = useState({ days: null, hours: null, minutes: null })
   const onTimeChange = (type) => ({ target: { value } }) => {
     setTime(time => ({ ...time, [type]: value }))
@@ -128,26 +150,26 @@ const BoostPlanner = (classes) => {
   const suggestions = getSuggestions({ type: vip ? 'vip' : 'base', time, nodes })
 
   return (
-    <Grid container className={classes.root} spacing={8}>
-      <Grid item xs={12} sm={2}>
-        <FormControl component='fieldset'>
+    <Grid
+      className={classes.root}
+      container
+      spacing={8}
+    >
+      <Grid item>
+        <FormControl
+          component='fieldset'
+          className={classes.timerForm}
+          noValidate
+          autoComplete='off'
+          fullWidth
+        >
           <FormLabel component='legend'>Boost/Mod Timer Left</FormLabel>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={vip}
-                onChange={onVIPChange}
-                value='vip'
-                color='primary'
-              />
-            }
-            label='VIP Mode'
-          />
-          <FormGroup>
+          <FormGroup row>
             {['days', 'hours', 'minutes'].map(type => (
               <TextField
+                className={classes.textField}
                 key={type}
-                variant='outlined'
+                // variant='outlined'
                 type='number'
                 min={0}
                 label={type}
@@ -156,44 +178,57 @@ const BoostPlanner = (classes) => {
                 onChange={onTimeChange(type)}
               />
             ))}
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={vip}
+                  onChange={onVIPChange}
+                  color='primary'
+                />
+              }
+              label='VIP Mode'
+            />
           </FormGroup>
         </FormControl>
-      </Grid>
-      <Grid item xs={12} sm={10}>
         <List className={classes.nodeList}>
           {Object.entries(nodes).map(([node, { checked }]) => (
             <ListItem key={node} role={undefined} onClick={onNodeCheck(node)} button dense>
               <Checkbox
                 checked={checked}
                 disableRipple
-                color='primary'
+                color={suggestions[node] > 0 ? 'primary' : 'default'}
               />
-              <ListItemText primary={suggestions[node] > 0 ? node : <del>{node}</del>} />
+              <ListItemText primary={checked ? (suggestions[node] > 0 ? <strong>{node}</strong> : node) : <del>{node}</del>} />
               {suggestions[node] > 0 && (
-                <ListItemSecondaryAction>
-                  {suggestions[node]} times
-                </ListItemSecondaryAction>
+                <Avatar className={classes.avatar}>
+                  {suggestions[node]}
+                </Avatar>
               )}
             </ListItem>
           ))}
-          {/* <Divider /> */}
-          <ListItem button dense>
-            <Checkbox
-              checked={true}
-              readOnly
-              color='primary'
-            />
-            <ListItemText primary='Chill' />
-            <ListItemSecondaryAction>
-              {suggestions.chill > 0 && (
-                `${suggestions.chill} ${suggestions.chill > 1 ? 'minutes' : 'minute'}`
-              )}
-            </ListItemSecondaryAction>
-          </ListItem>
+          {suggestions.chill > 0 && (
+            <Fragment>
+              <Divider />
+              <ListItem button dense>
+                <Checkbox
+                  checked={true}
+                  disabled
+                />
+                <ListItemText
+                  primary='Chill for'
+                  secondary={`${suggestions.chill} ${suggestions.chill > 1 ? 'minutes' : 'minute'}`}
+                />
+              </ListItem>
+            </Fragment>
+          )}
         </List>
+      </Grid>
+      <Grid item>
       </Grid>
     </Grid>
   )
 }
+
+BoostPlanner.propTypes = { classes: PropTypes.object.isRequired }
 
 export default withStyles(styles)(BoostPlanner)

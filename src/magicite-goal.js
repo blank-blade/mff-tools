@@ -29,7 +29,7 @@ const styles = theme => ({
 TODOs:
 - Add server picker (to apply diff time zone offset)
 - Add input for currently farmed amount (to show how much's needed for today)
-- Add suggestion of where to farm (?)
+- Add input for tower daysShort
 */
 const MagiciteGoal = ({ classes }) => {
   const [timer, updateTimer] = useState(moment().utcOffset(-480))
@@ -37,7 +37,6 @@ const MagiciteGoal = ({ classes }) => {
     const interval = setInterval(() => {
       updateTimer(moment().utcOffset(-480))
     }, 1000)
-
     return () => {
       clearInterval(interval)
     }

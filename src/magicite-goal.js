@@ -32,16 +32,17 @@ TODOs:
 - Add suggestion of where to farm (?)
 */
 const MagiciteGoal = ({ classes }) => {
-  const [ 
-    timer, 
-    updateTimer,
-  ] = useState(moment().utcOffset(-480))
-
+  const [timer, updateTimer] = useState(moment().utcOffset(-480))
   useEffect(() => {
-    setInterval(() => {
+    const interval = setInterval(() => {
       updateTimer(moment().utcOffset(-480))
     }, 1000)
+
+    return () => {
+      clearInterval(interval)
+    }
   })
+
   const casualGoal = dailyGoal()
   const towerGoal = dailyGoal({ daysShort: 10 })
   const goals = [

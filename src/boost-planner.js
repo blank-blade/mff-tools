@@ -120,7 +120,7 @@ const styles = (theme) => ({
   avatar: {
     margin: 0,
     color: '#fff',
-    backgroundColor: '#3f51b5', // TODO: use theme color
+    backgroundColor: theme.palette.primary.main,
   },
 })
 
@@ -198,7 +198,7 @@ const BoostPlanner = ({ classes }) => {
                 disableRipple
                 color={suggestions[node] > 0 ? 'primary' : 'default'}
               />
-              <ListItemText primary={checked ? (suggestions[node] > 0 ? <strong>{node}</strong> : node) : <del>{node}</del>} />
+              <ListItemText primary={suggestions[node] > 0 ? <strong>{node}</strong> : node} />
               {suggestions[node] > 0 && (
                 <Avatar className={classes.avatar}>
                   {suggestions[node]}

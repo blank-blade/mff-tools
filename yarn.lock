@@ -8464,6 +8464,13 @@ url@^0.11.0:
     punycode "1.3.2"
     querystring "0.2.0"
 
+use-cached@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/use-cached/-/use-cached-1.0.0.tgz#3704761bd6aad4de37ea3acbab14c48c4dadb76e"
+  integrity sha512-ikVso0LUDKKordlBjLfzQAa9My6H001sLevADx7U0TDUZ9faDdl3p7H4i86GILFpBF0Kc1ddxLBcnArDu7kxBg==
+  dependencies:
+    lscache "^1.3.0"
+
 use@^3.1.0:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/use/-/use-3.1.1.tgz#d50c8cac79a19fbc20f2911f56eb973f4e10070f"

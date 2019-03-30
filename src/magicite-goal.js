@@ -8,7 +8,8 @@ import { Paper, Typography, LinearProgress } from '@material-ui/core'
 
 const dailyGoal = ({ daysShort = null, monthQuota = 20000 } = {}) => (today) => {
   const maxDays = daysShort ? today.daysInMonth() - daysShort : today.daysInMonth()
-  return Math.ceil(today.date() / maxDays * monthQuota)
+  const goal = Math.ceil(today.date() / maxDays * monthQuota)
+  return goal >= monthQuota ? monthQuota : goal
 }
 
 const endsIn = (now) => moment.duration(moment(now).endOf('day').diff(now)).humanize(true)

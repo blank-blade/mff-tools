@@ -3,7 +3,8 @@ import PropTypes from 'prop-types'
 
 import moment from 'moment'
 import { withStyles } from '@material-ui/core/styles'
-import { Paper, Typography, LinearProgress, TextField, Button } from '@material-ui/core'
+import { Paper, Typography, LinearProgress, TextField, InputAdornment, IconButton } from '@material-ui/core'
+import { SettingsBackupRestore } from '@material-ui/icons'
 import { cached } from 'use-cached'
 
 
@@ -75,14 +76,34 @@ const MagiciteGoal = ({ classes }) => {
   return (
     <>
       <TextField
+        variant='outlined'
         type='number'
         label={'Farmed Magicites'}
         margin='dense'
         value={mags}
         onChange={onMagsChange}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position='end'>
+              <IconButton
+                aria-label='Resest farmed magicites'
+                onClick={() => { setMags(0) }}
+              >
+                <SettingsBackupRestore />
+              </IconButton>
+              {[10, 100, 1000, 10000].map(v => (
+                <IconButton
+                  key={v}
+                  aria-label={`Add ${v} to farmed magicites`}
+                  onClick={() => { setMags((prev) => parseInt(prev) + v) }}
+                >
+                  +{v}
+                </IconButton>
+              ))}
+            </InputAdornment>
+          ),
+        }}
       />
-      <Button variant='contained'>Reset</Button>
-      <Button variant='contained'>Max</Button>
       <Paper className={classes.paper}>
         <Typography gutterBottom={true} component='h3' variant='h5'>Casual</Typography>
         <Typography gutterBottom={true} component='p'>

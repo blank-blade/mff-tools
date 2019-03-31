@@ -17,6 +17,8 @@ import {
   Divider,
 } from '@material-ui/core'
 import { withStyles } from '@material-ui/core/styles'
+import { cached } from 'use-cached'
+
 
 const getDefaultNodes = () => ({
   'Bahamut Lagoon - 100': {
@@ -124,22 +126,25 @@ const styles = (theme) => ({
   },
 })
 
+const BOOST_TIME_CACHE_KEY = 'mff_boost_time'
+const VIP_CACHE_KEY = 'mff_vip'
+const FARM_NODES_CACHE_KEY = 'mff_farm_nodes'
+
 const BoostPlanner = ({ classes }) => {
-  const [time, setTime] = useState({ days: null, hours: null, minutes: null })
+  const [time, setTime] = cached(BOOST_TIME_CACHE_KEY)(useState)({ days: null, hours: null, minutes: null })
   const onTimeChange = (type) => ({ target: { value } }) => {
     setTime(time => ({ ...time, [type]: value }))
   }
 
-  const [vip, setVIP] = useState(false)
+  const [vip, setVIP] = cached(VIP_CACHE_KEY)(useState)(false)
   const onVIPChange = ({ target: { checked } }) => {
     setVIP(checked)
   }
 
-  const [nodes, setNodes] = useState(getDefaultNodes())
+  const [nodes, setNodes] = cached(FARM_NODES_CACHE_KEY)(useState)(getDefaultNodes())
   const onNodeCheck = (node) => () => {
     setNodes({
       ...nodes,
-      //
       [node]: {
         ...nodes[node],
         checked: !nodes[node].checked,
@@ -164,6 +169,16 @@ const BoostPlanner = ({ classes }) => {
           fullWidth
         >
           <FormLabel component='legend'>Boost/Mod Timer Left</FormLabel>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={vip}
+                onChange={onVIPChange}
+                color='primary'
+              />
+            }
+            label='VIP Mode'
+          />
           <FormGroup row>
             {['days', 'hours', 'minutes'].map(type => (
               <TextField
@@ -178,16 +193,6 @@ const BoostPlanner = ({ classes }) => {
                 onChange={onTimeChange(type)}
               />
             ))}
-            <FormControlLabel
-              control={
-                <Switch
-                  checked={vip}
-                  onChange={onVIPChange}
-                  color='primary'
-                />
-              }
-              label='VIP Mode'
-            />
           </FormGroup>
         </FormControl>
         <List className={classes.nodeList}>

@@ -1,13 +1,14 @@
-import React, { Fragment, useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 import moment from 'moment'
 import { withStyles } from '@material-ui/core/styles'
-import { Paper, Typography, LinearProgress, TextField } from '@material-ui/core'
+import { Paper, Typography, LinearProgress, TextField, Button } from '@material-ui/core'
 import { cached } from 'use-cached'
 
 
 const DAYS_SHORT_CACHE_KEY = 'mff_tower_day'
+const FARMED_MAGS_CACHE_KEY = 'mff_farmed_mags'
 
 const dailyGoal = ({ daysShort = null, monthQuota = 20000 } = {}) => (today) => {
   const maxDays = daysShort ? today.daysInMonth() - daysShort : today.daysInMonth()
@@ -26,14 +27,10 @@ const towerDaysShort = (start, now) => moment.duration(moment(now).endOf('day').
 const styles = theme => ({
   paper: {
     ...theme.mixins.gutters(),
-    paddingTop: theme.spacing.unit * 2,
-    paddingBottom: theme.spacing.unit * 2,
-    marginBottom: '1em',
-  },
-  textField: {
-    marginLeft: theme.spacing.unit,
-    marginRight: theme.spacing.unit,
-    width: 108,
+    paddingTop: theme.spacing.unit * 1.3,
+    paddingBottom: theme.spacing.unit * 1.3,
+    marginBottom: theme.spacing.unit * 1.3,
+    marginTop: theme.spacing.unit * 1.3,
   },
 })
 
@@ -50,33 +47,49 @@ const useTimer = () => {
   return timer
 }
 
-const useTowerDaysShort = (initial) => cached(DAYS_SHORT_CACHE_KEY)(useState)(initial)
+const useTowerDaysShort = (...args) => cached(DAYS_SHORT_CACHE_KEY)(useState)(...args)
+
+const useFarmedMags = (...args) => cached(FARMED_MAGS_CACHE_KEY)(useState)(...args)
 
 /*
 TODOs:
 - Add server picker (to apply diff time zone offset)
-- Add input for currently farmed amount (to show how much's needed for today)
-- Add input for tower daysShort
 */
 const MagiciteGoal = ({ classes }) => {
-  const timer = useTimer()
-  const [daysShort, setDaysShort] = useTowerDaysShort(10)
   const casualGoal = dailyGoal()
+  const timer = useTimer()
+  const [mags, setMags] = useFarmedMags(casualGoal(timer))
+
+  const [daysShort, setDaysShort] = useTowerDaysShort(10)
   const towerGoal = dailyGoal({ daysShort })
+
   const onDaysShortChange = ({ target: { value } }) => {
     const startDate = moment(`${value} -0800`, 'YYYY-MM-DD ZZ')
     const days = towerDaysShort(startDate, timer)
     setDaysShort(days)
   }
+  const onMagsChange = ({ target: { value } }) => {
+    setMags(value)
+  }
+
   return (
-    <Fragment>
-      <Typography gutterBottom={true} component='h3' variant='h5'>
-        Server time: {timer.format('LLL')}
-      </Typography>
+    <>
+      <TextField
+        type='number'
+        label={'Farmed Magicites'}
+        margin='dense'
+        value={mags}
+        onChange={onMagsChange}
+      />
+      <Button variant='contained'>Reset</Button>
+      <Button variant='contained'>Max</Button>
       <Paper className={classes.paper}>
         <Typography gutterBottom={true} component='h3' variant='h5'>Casual</Typography>
         <Typography gutterBottom={true} component='p'>
-          you should have <strong>{casualGoal(timer)}</strong> magicites or more by end of today (<strong>{endsIn(timer)}</strong>)
+          you should {mags < casualGoal(timer) && (
+            <strong>farm {casualGoal(timer) - mags} and</strong>
+          )} <strong>have {casualGoal(timer)}</strong> magicites
+          or more by end of today (<strong>{endsIn(timer)}</strong>)
         </Typography>
         <LinearProgress variant="determinate" value={normalize(casualGoal(timer))} />
       </Paper>
@@ -90,11 +103,15 @@ const MagiciteGoal = ({ classes }) => {
           onChange={onDaysShortChange}
         />
         <Typography gutterBottom={true} component='p'>
-          you should have <strong>{towerGoal(timer)}</strong> magicites or more by end of today (<strong>{endsIn(timer)}</strong>)
+          you should {mags < towerGoal(timer) && (
+            <strong>farm {towerGoal(timer) - mags} and</strong>
+          )} <strong>have {towerGoal(timer)}</strong> magicites
+          or more by end of today (<strong>{endsIn(timer)}</strong>)
         </Typography>
         <LinearProgress variant="determinate" value={normalize(towerGoal(timer))} />
       </Paper>
-    </Fragment>
+      <Typography gutterBottom={true} component='p'>Server time: {timer.format('LLLL')}</Typography>
+    </>
   )
 }
 

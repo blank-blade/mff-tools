@@ -23,7 +23,7 @@ const normalizeBy = ({ min = 0, max = 20000 } = {}) => value => (value - min) * 
 const normalize = normalizeBy()
 
 const towerStart = (daysShort, now) => moment(now).subtract(daysShort, 'days').startOf('day')
-const towerDaysShort = (start, now) => moment.duration(moment(now).endOf('day').diff(start)).days()
+const towerDaysShort = (start, now) => moment.duration(moment(now).endOf('month').diff(start)).days()
 
 const styles = theme => ({
   paper: {

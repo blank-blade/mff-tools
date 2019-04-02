@@ -5,7 +5,7 @@ import moment from 'moment'
 import { withStyles } from '@material-ui/core/styles'
 import { Paper, Typography, LinearProgress, TextField, InputAdornment, IconButton } from '@material-ui/core'
 import { SettingsBackupRestore } from '@material-ui/icons'
-import { cached } from 'use-cached'
+import cached from 'use-cached'
 
 
 const DAYS_SHORT_CACHE_KEY = 'mff_tower_day'
@@ -22,7 +22,7 @@ const endsIn = (now) => moment.duration(moment(now).endOf('day').diff(now)).huma
 const normalizeBy = ({ min = 0, max = 20000 } = {}) => value => (value - min) * 100 / (max - min)
 const normalize = normalizeBy()
 
-const towerStart = (daysShort, now) => moment(now).subtract(daysShort, 'days').startOf('day')
+const towerStart = (daysShort, now) => moment(now).endOf('month').subtract(daysShort, 'days').startOf('day')
 const towerDaysShort = (start, now) => moment.duration(moment(now).endOf('month').diff(start)).days()
 
 const styles = theme => ({
@@ -52,10 +52,6 @@ const useTowerDaysShort = (...args) => cached(DAYS_SHORT_CACHE_KEY)(useState)(..
 
 const useFarmedMags = (...args) => cached(FARMED_MAGS_CACHE_KEY)(useState)(...args)
 
-/*
-TODOs:
-- Add server picker (to apply diff time zone offset)
-*/
 const MagiciteGoal = ({ classes }) => {
   const casualGoal = dailyGoal()
   const timer = useTimer()
@@ -106,12 +102,15 @@ const MagiciteGoal = ({ classes }) => {
       />
       <Paper className={classes.paper}>
         <Typography gutterBottom={true} component='h3' variant='h5'>Casual</Typography>
-        <Typography gutterBottom={true} component='p'>
-          you should {mags < casualGoal(timer) && (
-            <strong>farm {casualGoal(timer) - mags} and</strong>
-          )} <strong>have {casualGoal(timer)}</strong> magicites
-          or more by end of today (<strong>{endsIn(timer)}</strong>)
-        </Typography>
+        {mags < casualGoal(timer) ? (
+          <Typography gutterBottom={true} component='p'>
+            You should <strong>farm {casualGoal(timer) - mags} and have {casualGoal(timer)}</strong> magicites or more by end of today (<strong>{endsIn(timer)}</strong>)
+          </Typography>
+        ) : (
+          <Typography gutterBottom={true} component='p'>
+            <strong>Done for today</strong>
+          </Typography>
+        )}
         <LinearProgress variant="determinate" value={normalize(casualGoal(timer))} />
       </Paper>
       <Paper className={classes.paper}>
@@ -123,12 +122,15 @@ const MagiciteGoal = ({ classes }) => {
           value={towerStart(daysShort, timer).format('YYYY-MM-DD')}
           onChange={onDaysShortChange}
         />
-        <Typography gutterBottom={true} component='p'>
-          you should {mags < towerGoal(timer) && (
-            <strong>farm {towerGoal(timer) - mags} and</strong>
-          )} <strong>have {towerGoal(timer)}</strong> magicites
-          or more by end of today (<strong>{endsIn(timer)}</strong>)
-        </Typography>
+        {mags < towerGoal(timer) ? (
+          <Typography gutterBottom={true} component='p'>
+            You should <strong>farm {towerGoal(timer) - mags} and have {towerGoal(timer)}</strong> magicites or more by end of today (<strong>{endsIn(timer)}</strong>)
+          </Typography>
+        ) : (
+          <Typography gutterBottom={true} component='p'>
+            <strong>Done for today</strong>
+          </Typography>
+        )}
         <LinearProgress variant="determinate" value={normalize(towerGoal(timer))} />
       </Paper>
       <Typography gutterBottom={true} component='p'>Server time: {timer.format('LLLL')}</Typography>

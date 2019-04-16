@@ -25,5 +25,5 @@ deploy:
     - yarn config set cache-folder .yarn-cache
     - yarn install
   script:
-    - git remote add gh-pages git@github.com:woozyking/mff-tools.git
+    - git remote add gh-pages git@github.com:blank-blade/mff-tools.git
     - yarn deploy --ci --remote gh-pages --branch gh-pages 1> /dev/null
